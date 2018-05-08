@@ -2,7 +2,6 @@ package com.veblen;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -43,15 +42,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onRequestNet(View view) {
+        //创建请求链接
         Request request = new Request.Builder().get().url("https://www.baidu.com").build();
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         try {
+            //添加SSL证书验证
             builder.sslSocketFactory(getSSLSocketFactory(), new MyX509TrustManager());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (KeyManagementException e) {
             e.printStackTrace();
         }
+        //请求网络
         OkHttpClient client = builder.build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -103,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 throw new CertificateException("checkServerTrusted: AuthType is not ECDHE_RSA");
             }
 
+            //检查所有证书
             try {
                 TrustManagerFactory factory = TrustManagerFactory.getInstance("X509");
                 factory.init((KeyStore) null);
